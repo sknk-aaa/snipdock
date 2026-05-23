@@ -25,6 +25,10 @@ pub fn run() {
 
             tray::setup(app.handle())?;
 
+            if let Some(w) = app.get_webview_window("main") {
+                let _ = w.minimize();
+            }
+
             let saved_hotkey = {
                 let data = storage::load(app.handle());
                 data["settings"]["hotkey"]
