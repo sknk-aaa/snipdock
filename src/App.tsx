@@ -119,7 +119,10 @@ export default function App() {
     if (!isTauri()) return;
     const p = listen('window-blur', () => {
       if (view === 'settings') return;
-      setTimeout(() => invoke('hide_window').catch(() => {}), 50);
+      setTimeout(() => {
+        if (document.hasFocus()) return;
+        invoke('hide_window').catch(() => {});
+      }, 300);
     });
     return () => { p.then(fn => fn()); };
   }, [view]);

@@ -5,6 +5,7 @@ mod tray;
 mod window;
 
 use std::sync::{Arc, atomic::{AtomicBool, Ordering}};
+use std::time::{Duration, Instant};
 use tauri::{Emitter, Manager};
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -42,14 +43,21 @@ pub fn run() {
             let handle = app.handle().clone();
             let focused = Arc::new(AtomicBool::new(false));
             let focused_clone = focused.clone();
+            let last_focused = Arc::new(std::sync::Mutex::new(Instant::now()));
+            let last_focused_clone = last_focused.clone();
             let main_window = app.get_webview_window("main").unwrap();
             main_window.on_window_event(move |event| {
                 match event {
                     tauri::WindowEvent::Focused(true) => {
                         focused_clone.store(true, Ordering::SeqCst);
+                        *last_focused_clone.lock().unwrap() = Instant::now();
                     }
                     tauri::WindowEvent::Focused(false) => {
                         if !focused_clone.swap(false, Ordering::SeqCst) {
+                            return;
+                        }
+                        // フォーカス取得直後(300ms以内)のblurは無視
+                        if last_focused.lock().unwrap().elapsed() < Duration::from_millis(300) {
                             return;
                         }
                         if let Some(w) = handle.get_webview_window("main") {
