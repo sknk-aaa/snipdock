@@ -1,7 +1,8 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { Snippet, Language } from '../types';
 import DropdownMenu from './DropdownMenu';
+import { highlight } from '../lib/highlight';
 
 const LANGUAGES: { value: Language; label: string }[] = [
   { value: 'plain',      label: 'Plain' },
@@ -62,6 +63,11 @@ export default function SnippetCard({ snippet, onUpdate, onDelete, onToast, onCo
       setTimeout(() => setCopied(false), 1400);
     },
     [editing, draft, snippet.content, onCopy, onToast, t],
+  );
+
+  const highlighted = useMemo(
+    () => highlight(snippet.content, snippet.language),
+    [snippet.content, snippet.language],
   );
 
   const menuItems = [
@@ -159,7 +165,10 @@ export default function SnippetCard({ snippet, onUpdate, onDelete, onToast, onCo
             </div>
           </>
         ) : (
-          <span className="code-display">{snippet.content || ' '}</span>
+          <span
+            className="code-display"
+            dangerouslySetInnerHTML={{ __html: highlighted || '&nbsp;' }}
+          />
         )}
       </div>
     </div>

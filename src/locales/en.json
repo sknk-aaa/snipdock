@@ -41,6 +41,8 @@
     "general": "General",
     "hotkey": "Hotkey",
     "hotkeyDesc": "Open / close the window",
+    "hotkeyClick": "Click to change",
+    "hotkeyRecording": "Press new shortcut...",
     "startup": "Launch at startup",
     "closeAfterCopy": "Auto-close after copy",
     "closeAfterCopyDesc": "Window hides after clicking Copy",

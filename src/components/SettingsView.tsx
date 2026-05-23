@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { AppSettings, AccentColor, AppLanguage } from '../types';
 import Toggle from './Toggle';
@@ -16,8 +17,36 @@ interface Props {
   onProModal: () => void;
 }
 
+function buildHotkey(e: KeyboardEvent): string | null {
+  const modifiers: string[] = [];
+  if (e.ctrlKey) modifiers.push('Ctrl');
+  if (e.altKey) modifiers.push('Alt');
+  if (e.shiftKey) modifiers.push('Shift');
+  if (e.metaKey) modifiers.push('Meta');
+
+  const MODIFIER_KEYS = new Set(['Control', 'Alt', 'Shift', 'Meta']);
+  if (MODIFIER_KEYS.has(e.key)) return null;
+  if (modifiers.length === 0) return null;
+
+  const key = e.key === ' ' ? 'Space' : e.key.length === 1 ? e.key.toUpperCase() : e.key;
+  return [...modifiers, key].join('+');
+}
+
 export default function SettingsView({ settings, isPro, onUpdate, onProModal }: Props) {
   const { t } = useTranslation();
+  const [recording, setRecording] = useState(false);
+
+  useEffect(() => {
+    if (!recording) return;
+    function onKeyDown(e: KeyboardEvent) {
+      e.preventDefault();
+      if (e.key === 'Escape') { setRecording(false); return; }
+      const hotkey = buildHotkey(e);
+      if (hotkey) { onUpdate({ hotkey }); setRecording(false); }
+    }
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, [recording, onUpdate]);
 
   const hotkeyParts = settings.hotkey.split('+');
 
@@ -31,9 +60,19 @@ export default function SettingsView({ settings, isPro, onUpdate, onProModal }: 
             {t('settings.hotkey')}
             <span className="setting-sub">{t('settings.hotkeyDesc')}</span>
           </div>
-          <div className="kbd-combo">
-            {hotkeyParts.map((k, i) => <kbd key={i}>{k}</kbd>)}
-          </div>
+          {recording ? (
+            <div className="hotkey-recording" onClick={() => setRecording(false)}>
+              {t('settings.hotkeyRecording')}
+            </div>
+          ) : (
+            <div
+              className="kbd-combo kbd-combo-clickable"
+              title={t('settings.hotkeyClick')}
+              onClick={() => setRecording(true)}
+            >
+              {hotkeyParts.map((k, i) => <kbd key={i}>{k}</kbd>)}
+            </div>
+          )}
         </div>
 
         <div className="setting-row">

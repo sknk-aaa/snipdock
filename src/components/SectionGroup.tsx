@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import type { Section, Snippet } from '../types';
 import SnippetCard from './SnippetCard';
 import DropdownMenu from './DropdownMenu';
+import ConfirmDialog from './ConfirmDialog';
 
 interface Props {
   section: Section;
@@ -24,6 +25,7 @@ export default function SectionGroup({
   const [renaming, setRenaming] = useState(false);
   const [nameVal, setNameVal] = useState(section.name);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
   const renameRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -62,7 +64,7 @@ export default function SectionGroup({
   const menuItems = [
     { label: t('section.rename'), onClick: () => setRenaming(true) },
     'sep' as const,
-    { label: t('section.delete'), danger: true, onClick: onDelete },
+    { label: t('section.delete'), danger: true, onClick: () => setConfirmOpen(true) },
   ];
 
   return (
@@ -126,6 +128,13 @@ export default function SectionGroup({
           ))}
         </div>
       </div>
+      {confirmOpen && (
+        <ConfirmDialog
+          message={t('confirm.deleteSection', { name: section.name })}
+          onConfirm={() => { setConfirmOpen(false); onDelete(); }}
+          onCancel={() => setConfirmOpen(false)}
+        />
+      )}
     </div>
   );
 }

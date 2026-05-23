@@ -41,6 +41,8 @@
     "general": "一般",
     "hotkey": "ホットキー",
     "hotkeyDesc": "ウィンドウを開閉するショートカット",
+    "hotkeyClick": "クリックして変更",
+    "hotkeyRecording": "新しいキーを押してください...",
     "startup": "起動時に自動スタート",
     "closeAfterCopy": "コピー後に閉じる",
     "closeAfterCopyDesc": "Copyボタン押下後にウィンドウを閉じる",
