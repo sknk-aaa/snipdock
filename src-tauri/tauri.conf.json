@@ -38,6 +38,8 @@
   "bundle": {
     "active": true,
     "targets": "all",
+    "publisher": "Kaneko Apps",
+    "copyright": "© 2026 Kaneko Apps",
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",
