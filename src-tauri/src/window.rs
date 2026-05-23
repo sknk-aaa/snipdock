@@ -34,7 +34,7 @@ pub fn show_at_cursor(app: &AppHandle) {
 
 pub fn hide(app: &AppHandle) {
     if let Some(window) = app.get_webview_window("main") {
-        let _ = window.hide();
+        let _ = window.minimize();
     }
 }
 
@@ -42,8 +42,10 @@ pub fn toggle(app: &AppHandle) {
     let Some(window) = app.get_webview_window("main") else {
         return;
     };
-    if window.is_visible().unwrap_or(false) {
-        let _ = window.hide();
+    let minimized = window.is_minimized().unwrap_or(false);
+    let visible = window.is_visible().unwrap_or(false);
+    if visible && !minimized {
+        let _ = window.minimize();
     } else {
         show_at_cursor(app);
     }
