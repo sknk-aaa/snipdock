@@ -4,6 +4,7 @@ mod storage;
 mod tray;
 mod window;
 
+use std::sync::{Arc, atomic::{AtomicBool, Ordering}};
 use tauri::{Emitter, Manager};
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -39,15 +40,26 @@ pub fn run() {
             hotkey::register(app.handle(), &saved_hotkey);
 
             let handle = app.handle().clone();
+            let focused = Arc::new(AtomicBool::new(false));
+            let focused_clone = focused.clone();
             let main_window = app.get_webview_window("main").unwrap();
             main_window.on_window_event(move |event| {
-                if let tauri::WindowEvent::Focused(false) = event {
-                    if let Some(w) = handle.get_webview_window("main") {
-                        if w.is_minimized().unwrap_or(false) {
+                match event {
+                    tauri::WindowEvent::Focused(true) => {
+                        focused_clone.store(true, Ordering::SeqCst);
+                    }
+                    tauri::WindowEvent::Focused(false) => {
+                        if !focused_clone.swap(false, Ordering::SeqCst) {
                             return;
                         }
+                        if let Some(w) = handle.get_webview_window("main") {
+                            if w.is_minimized().unwrap_or(false) {
+                                return;
+                            }
+                        }
+                        let _ = handle.emit("window-blur", ());
                     }
-                    let _ = handle.emit("window-blur", ());
+                    _ => {}
                 }
             });
 
