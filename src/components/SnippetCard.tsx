@@ -59,10 +59,9 @@ export default function SnippetCard({ snippet, onUpdate, onDelete, onToast, onCo
       const text = editing ? draft : snippet.content;
       onCopy(text);
       setCopied(true);
-      onToast(t('toast.copied'));
       setTimeout(() => setCopied(false), 1400);
     },
-    [editing, draft, snippet.content, onCopy, onToast, t],
+    [editing, draft, snippet.content, onCopy],
   );
 
   const highlighted = useMemo(

@@ -12,6 +12,7 @@ interface Props {
   onUpdate: (patch: Partial<Section>) => void;
   onDelete: () => void;
   onToast: (msg: string, undoFn?: () => void) => void;
+  onAfterCopy: () => void;
   onProModal: () => void;
 }
 
@@ -20,6 +21,7 @@ export default function SectionGroup({
   onUpdate,
   onDelete,
   onToast,
+  onAfterCopy,
 }: Props) {
   const { t } = useTranslation();
   const [renaming, setRenaming] = useState(false);
@@ -51,7 +53,8 @@ export default function SectionGroup({
   }
 
   function handleCopy(text: string) {
-    navigator.clipboard.writeText(text).catch(() => { /* no-op in non-secure context */ });
+    navigator.clipboard.writeText(text).catch(() => {});
+    onAfterCopy();
   }
 
   const sorted = [...section.snippets].sort((a, b) => {

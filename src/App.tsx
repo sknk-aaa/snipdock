@@ -1,6 +1,8 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { v4 as uuidv4 } from 'uuid';
+import { invoke } from '@tauri-apps/api/core';
+import { listen } from '@tauri-apps/api/event';
 import type { Section, AppSettings, ToastState, AccentColor } from './types';
 import TopBar from './components/TopBar';
 import SectionGroup from './components/SectionGroup';
@@ -8,6 +10,7 @@ import Toast from './components/Toast';
 import SettingsView from './components/SettingsView';
 import ProModal from './components/ProModal';
 import i18n from './lib/i18n';
+import { isTauri, loadData, saveData } from './lib/storage';
 
 const FREE_MAX_SECTIONS = 5;
 const FREE_MAX_SNIPPETS = 20;
@@ -49,36 +52,37 @@ const DEFAULT_SETTINGS: AppSettings = {
   windowHeight: 600,
 };
 
-function loadState(): { sections: Section[]; settings: AppSettings; hintSeen: boolean } {
-  try {
-    const raw = localStorage.getItem('snipdock');
-    if (raw) {
-      const parsed = JSON.parse(raw);
-      return {
-        sections: parsed.sections ?? SEED_SECTIONS,
-        settings: { ...DEFAULT_SETTINGS, ...(parsed.settings ?? {}) },
-        hintSeen: parsed.hintSeen ?? false,
-      };
-    }
-  } catch { /* ignore */ }
-  return { sections: SEED_SECTIONS, settings: DEFAULT_SETTINGS, hintSeen: false };
-}
-
 export default function App() {
   const { t } = useTranslation();
   const [view, setView] = useState<'main' | 'settings'>('main');
   const [proModal, setProModal] = useState(false);
   const [toast, setToast] = useState<ToastState | null>(null);
+  const [loaded, setLoaded] = useState(false);
 
-  const initial = loadState();
-  const [sections, setSections] = useState<Section[]>(initial.sections);
-  const [settings, setSettings] = useState<AppSettings>(initial.settings);
-  const [hintSeen, setHintSeen] = useState(initial.hintSeen);
+  const [sections, setSections] = useState<Section[]>(SEED_SECTIONS);
+  const [settings, setSettings] = useState<AppSettings>(DEFAULT_SETTINGS);
+  const [hintSeen, setHintSeen] = useState(false);
   const [isPro] = useState(false);
 
+  const prevHotkeyRef = useRef<string | null>(null);
+  const prevAutoStartRef = useRef<boolean | null>(null);
+
   useEffect(() => {
-    localStorage.setItem('snipdock', JSON.stringify({ sections, settings, hintSeen }));
-  }, [sections, settings, hintSeen]);
+    loadData().then(raw => {
+      if (raw && typeof raw === 'object') {
+        const d = raw as Record<string, unknown>;
+        if (Array.isArray(d.sections)) setSections(d.sections as Section[]);
+        if (d.settings) setSettings({ ...DEFAULT_SETTINGS, ...(d.settings as Partial<AppSettings>) });
+        if (typeof d.hintSeen === 'boolean') setHintSeen(d.hintSeen);
+      }
+      setLoaded(true);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!loaded) return;
+    saveData({ version: 1, sections, settings, hintSeen });
+  }, [sections, settings, hintSeen, loaded]);
 
   useEffect(() => {
     i18n.changeLanguage(settings.language);
@@ -93,17 +97,55 @@ export default function App() {
     r.style.setProperty('--bg-window', `oklch(0.13 0.013 265 / ${settings.bgOpacity / 100})`);
   }, [settings.accentColor, settings.bgOpacity]);
 
+  useEffect(() => {
+    if (!isTauri() || !loaded) return;
+    if (prevHotkeyRef.current === null) { prevHotkeyRef.current = settings.hotkey; return; }
+    if (prevHotkeyRef.current !== settings.hotkey) {
+      prevHotkeyRef.current = settings.hotkey;
+      invoke('update_hotkey', { hotkey: settings.hotkey }).catch(console.error);
+    }
+  }, [settings.hotkey, loaded]);
+
+  useEffect(() => {
+    if (!isTauri() || !loaded) return;
+    if (prevAutoStartRef.current === null) { prevAutoStartRef.current = settings.autoStart; return; }
+    if (prevAutoStartRef.current !== settings.autoStart) {
+      prevAutoStartRef.current = settings.autoStart;
+      invoke('set_autostart', { enabled: settings.autoStart }).catch(console.error);
+    }
+  }, [settings.autoStart, loaded]);
+
+  useEffect(() => {
+    if (!isTauri()) return;
+    const p = listen('window-blur', () => {
+      if (view === 'settings') return;
+      setTimeout(() => invoke('hide_window').catch(() => {}), 50);
+    });
+    return () => { p.then(fn => fn()); };
+  }, [view]);
+
+  useEffect(() => {
+    if (!isTauri()) return;
+    const p = listen('open-settings', () => setView('settings'));
+    return () => { p.then(fn => fn()); };
+  }, []);
+
   const showToast = useCallback((msg: string, undoFn?: () => void) => {
     setToast({ key: Date.now(), msg, undoFn });
   }, []);
 
+  const handleAfterCopy = useCallback(() => {
+    if (settings.closeAfterCopy && isTauri()) {
+      invoke('hide_window').catch(console.error);
+    } else {
+      showToast(t('toast.copied'));
+    }
+  }, [settings.closeAfterCopy, showToast, t]);
+
   const totalSnippets = sections.reduce((n, s) => n + s.snippets.length, 0);
 
   function addSection() {
-    if (!isPro && sections.length >= FREE_MAX_SECTIONS) {
-      setProModal(true);
-      return;
-    }
+    if (!isPro && sections.length >= FREE_MAX_SECTIONS) { setProModal(true); return; }
     setSections(prev => [
       ...prev,
       { id: uuidv4(), name: 'New Section', collapsed: false, order: prev.length, snippets: [] },
@@ -111,10 +153,7 @@ export default function App() {
   }
 
   function addSnippet() {
-    if (!isPro && totalSnippets >= FREE_MAX_SNIPPETS) {
-      setProModal(true);
-      return;
-    }
+    if (!isPro && totalSnippets >= FREE_MAX_SNIPPETS) { setProModal(true); return; }
     setSections(prev => {
       if (!prev.length) return prev;
       const openIdx = prev.findIndex(s => !s.collapsed);
@@ -198,6 +237,7 @@ export default function App() {
                 onUpdate={patch => updateSection(sec.id, patch)}
                 onDelete={() => deleteSection(sec.id)}
                 onToast={showToast}
+                onAfterCopy={handleAfterCopy}
                 onProModal={() => setProModal(true)}
               />
             ))
