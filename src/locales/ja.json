@@ -1,0 +1,77 @@
+{
+  "topbar": {
+    "addSection": "+ Section",
+    "addSnippet": "+ Snippet",
+    "settings": "Settings",
+    "back": "戻る"
+  },
+  "section": {
+    "rename": "名前を変更",
+    "delete": "Sectionを削除",
+    "renamePlaceholder": "Section名"
+  },
+  "snippet": {
+    "pin": "ピン留め",
+    "unpin": "ピン解除",
+    "delete": "Snippetを削除",
+    "editHint": "保存: Ctrl+Enter · キャンセル: Esc",
+    "copy": "コピー",
+    "copied": "コピー済み"
+  },
+  "toast": {
+    "copied": "✔ クリップボードにコピーしました",
+    "snippetDeleted": "Snippetを削除しました",
+    "sectionDeleted": "Sectionを削除しました",
+    "undo": "元に戻す"
+  },
+  "confirm": {
+    "deleteSection": "「{{name}}」を削除しますか？",
+    "delete": "削除",
+    "cancel": "キャンセル"
+  },
+  "empty": {
+    "noSections": "まだSnippetがありません",
+    "addSection": "「+ Section」で追加してください",
+    "noSnippets": "+ Snippet で追加"
+  },
+  "hint": {
+    "hotkey": "Ctrl + Shift + Space でいつでも開けます"
+  },
+  "settings": {
+    "general": "一般",
+    "hotkey": "ホットキー",
+    "hotkeyDesc": "ウィンドウを開閉するショートカット",
+    "startup": "起動時に自動スタート",
+    "closeAfterCopy": "コピー後に閉じる",
+    "closeAfterCopyDesc": "Copyボタン押下後にウィンドウを閉じる",
+    "appearance": "外観",
+    "accentColor": "アクセントカラー",
+    "bgOpacity": "背景の透明度",
+    "language": "言語",
+    "japanese": "日本語",
+    "english": "English",
+    "data": "データ",
+    "export": "エクスポート",
+    "exportDesc": "スニペットをJSONファイルに保存 (Pro)",
+    "import": "インポート",
+    "importDesc": "JSONファイルからスニペットを読み込む (Pro)",
+    "about": "このアプリについて",
+    "version": "バージョン"
+  },
+  "pro": {
+    "badge": "PRO",
+    "upgrade": "Proにアップグレード",
+    "upgradeDesc": "無制限のスニペット・並び替え・エクスポート",
+    "free": "Free",
+    "active": "Pro",
+    "modalEyebrow": "SnipDock",
+    "modalTitle": "Proにアップグレード",
+    "modalSub": "Free版では{{snippets}}個・{{sections}}個まで保存できます。Proで無制限に。",
+    "feature1": "Section・Snippet数無制限",
+    "feature2": "ドラッグで並び替え",
+    "feature3": "エクスポート / インポート",
+    "feature4": "優先サポート",
+    "upgradeBtn": "Proにアップグレード",
+    "dismiss": "後で"
+  }
+}

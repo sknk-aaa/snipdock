@@ -1,0 +1,77 @@
+{
+  "topbar": {
+    "addSection": "+ Section",
+    "addSnippet": "+ Snippet",
+    "settings": "Settings",
+    "back": "Back"
+  },
+  "section": {
+    "rename": "Rename",
+    "delete": "Delete section",
+    "renamePlaceholder": "Section name"
+  },
+  "snippet": {
+    "pin": "Pin to top",
+    "unpin": "Unpin",
+    "delete": "Delete snippet",
+    "editHint": "Save: Ctrl+Enter · Cancel: Esc",
+    "copy": "Copy",
+    "copied": "Copied!"
+  },
+  "toast": {
+    "copied": "✔ Copied to clipboard",
+    "snippetDeleted": "Snippet deleted",
+    "sectionDeleted": "Section deleted",
+    "undo": "Undo"
+  },
+  "confirm": {
+    "deleteSection": "Delete \"{{name}}\"?",
+    "delete": "Delete",
+    "cancel": "Cancel"
+  },
+  "empty": {
+    "noSections": "No snippets yet",
+    "addSection": "Click + Section to get started",
+    "noSnippets": "Click + Snippet to add"
+  },
+  "hint": {
+    "hotkey": "Press Ctrl + Shift + Space anytime to open"
+  },
+  "settings": {
+    "general": "General",
+    "hotkey": "Hotkey",
+    "hotkeyDesc": "Open / close the window",
+    "startup": "Launch at startup",
+    "closeAfterCopy": "Auto-close after copy",
+    "closeAfterCopyDesc": "Window hides after clicking Copy",
+    "appearance": "Appearance",
+    "accentColor": "Accent color",
+    "bgOpacity": "Background opacity",
+    "language": "Language",
+    "japanese": "日本語",
+    "english": "English",
+    "data": "Data",
+    "export": "Export",
+    "exportDesc": "Save snippets to a JSON file (Pro)",
+    "import": "Import",
+    "importDesc": "Load snippets from a JSON file (Pro)",
+    "about": "About",
+    "version": "Version"
+  },
+  "pro": {
+    "badge": "PRO",
+    "upgrade": "Upgrade to Pro",
+    "upgradeDesc": "Unlimited snippets, sorting & export",
+    "free": "Free",
+    "active": "Pro",
+    "modalEyebrow": "SnipDock",
+    "modalTitle": "Go Pro",
+    "modalSub": "Free version supports up to {{snippets}} snippets and {{sections}} sections. Upgrade to Pro for unlimited.",
+    "feature1": "Unlimited sections & snippets",
+    "feature2": "Drag & drop sorting",
+    "feature3": "Export / Import",
+    "feature4": "Priority support",
+    "upgradeBtn": "Upgrade to Pro",
+    "dismiss": "Maybe later"
+  }
+}
