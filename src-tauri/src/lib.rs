@@ -42,6 +42,11 @@ pub fn run() {
             let main_window = app.get_webview_window("main").unwrap();
             main_window.on_window_event(move |event| {
                 if let tauri::WindowEvent::Focused(false) = event {
+                    if let Some(w) = handle.get_webview_window("main") {
+                        if w.is_minimized().unwrap_or(false) {
+                            return;
+                        }
+                    }
                     let _ = handle.emit("window-blur", ());
                 }
             });
