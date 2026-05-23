@@ -11,7 +11,7 @@ function resolveInitialLang(): 'ja' | 'en' {
       if (lang === 'ja' || lang === 'en') return lang;
     }
   } catch { /* ignore */ }
-  return navigator.language.startsWith('ja') ? 'ja' : 'en';
+  return 'en';
 }
 
 i18n.use(initReactI18next).init({

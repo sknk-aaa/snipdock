@@ -42,7 +42,7 @@ const DEFAULT_SETTINGS: AppSettings = {
   hotkey: 'Ctrl+Shift+Space',
   closeAfterCopy: false,
   autoStart: false,
-  language: navigator.language.startsWith('ja') ? 'ja' : 'en',
+  language: 'en',
   accentColor: 'blue',
   bgOpacity: 90,
   windowWidth: 480,
