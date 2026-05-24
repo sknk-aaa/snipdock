@@ -3,11 +3,10 @@ import { useTranslation } from 'react-i18next';
 interface Props {
   view: 'main' | 'settings';
   onAddSection: () => void;
-  onAddSnippet: () => void;
   onToggleSettings: () => void;
 }
 
-export default function TopBar({ view, onAddSection, onAddSnippet, onToggleSettings }: Props) {
+export default function TopBar({ view, onAddSection, onToggleSettings }: Props) {
   const { t } = useTranslation();
   const isSettings = view === 'settings';
 
@@ -27,13 +26,6 @@ export default function TopBar({ view, onAddSection, onAddSnippet, onToggleSetti
               <path d="M5.5 1V10M1 5.5H10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
             </svg>
             {t('topbar.addSection')}
-          </button>
-          <div className="bar-divider" />
-          <button className="bar-btn" onClick={onAddSnippet}>
-            <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
-              <path d="M5.5 1V10M1 5.5H10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-            </svg>
-            {t('topbar.addSnippet')}
           </button>
         </>
       )}

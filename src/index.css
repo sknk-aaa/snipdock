@@ -272,6 +272,19 @@ body {
 .sec-drag-handle:hover { opacity: 1; }
 .sec-drag-handle:active { cursor: grabbing; }
 
+.sec-add-btn {
+  width: 20px; height: 20px;
+  background: none; border: none;
+  color: var(--text-muted); cursor: pointer;
+  border-radius: 3px;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0;
+  transition: opacity 0.12s, background 0.12s, color 0.12s;
+  flex-shrink: 0;
+}
+.sec-add-btn:hover { background: var(--bg-surface-hi); color: var(--text-primary); opacity: 1; }
+.section-header:hover .sec-add-btn { opacity: 0.6; }
+
 .sec-menu-btn {
   width: 20px; height: 20px;
   background: none; border: none;

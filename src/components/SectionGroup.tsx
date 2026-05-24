@@ -18,12 +18,11 @@ import ConfirmDialog from './ConfirmDialog';
 interface Props {
   section: Section;
   isPro: boolean;
-  totalSnippets: number;
   onUpdate: (patch: Partial<Section>) => void;
   onDelete: () => void;
   onToast: (msg: string, undoFn?: () => void) => void;
   onAfterCopy: () => void;
-  onProModal: () => void;
+  onAddSnippet: () => void;
 }
 
 export default function SectionGroup({
@@ -33,6 +32,7 @@ export default function SectionGroup({
   onDelete,
   onToast,
   onAfterCopy,
+  onAddSnippet,
 }: Props) {
   const { t } = useTranslation();
   const [renaming, setRenaming] = useState(false);
@@ -160,6 +160,16 @@ export default function SectionGroup({
             <span className="section-count"> · {section.snippets.length}</span>
           </span>
         )}
+
+        <button
+          className="sec-add-btn"
+          onClick={e => { e.stopPropagation(); onAddSnippet(); }}
+          title={t('topbar.addSnippet')}
+        >
+          <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+            <path d="M5.5 1V10M1 5.5H10" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+          </svg>
+        </button>
 
         <div className="dropdown-wrap" onClick={e => e.stopPropagation()}>
           <button

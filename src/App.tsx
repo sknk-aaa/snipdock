@@ -259,23 +259,19 @@ export default function App() {
     ]);
   }
 
-  function addSnippet() {
+  function addSnippet(sectionId: string) {
     if (!isPro && totalSnippets >= FREE_MAX_SNIPPETS) { setProModal(true); return; }
-    setSections(prev => {
-      if (!prev.length) return prev;
-      const openIdx = prev.findIndex(s => !s.collapsed);
-      const idx = openIdx >= 0 ? openIdx : 0;
-      const target = prev[idx];
-      const updated: Section = {
-        ...target,
+    setSections(prev => prev.map(s => {
+      if (s.id !== sectionId) return s;
+      return {
+        ...s,
         collapsed: false,
         snippets: [
           { id: uuidv4(), content: '', pinned: false, order: 0 },
-          ...target.snippets.map(s => ({ ...s, order: s.order + 1 })),
+          ...s.snippets.map(sn => ({ ...sn, order: sn.order + 1 })),
         ],
       };
-      return prev.map((s, i) => (i === idx ? updated : s));
-    });
+    }));
   }
 
   function updateSection(id: string, patch: Partial<Section>) {
@@ -322,7 +318,6 @@ export default function App() {
       <TopBar
         view={view}
         onAddSection={addSection}
-        onAddSnippet={addSnippet}
         onToggleSettings={() => setView(v => (v === 'settings' ? 'main' : 'settings'))}
       />
 
@@ -362,12 +357,11 @@ export default function App() {
                     key={sec.id}
                     section={sec}
                     isPro={isPro}
-                    totalSnippets={totalSnippets}
                     onUpdate={patch => updateSection(sec.id, patch)}
                     onDelete={() => deleteSection(sec.id)}
                     onToast={showToast}
                     onAfterCopy={handleAfterCopy}
-                    onProModal={() => setProModal(true)}
+                    onAddSnippet={() => addSnippet(sec.id)}
                   />
                 ))}
               </SortableContext>
