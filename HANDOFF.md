@@ -324,8 +324,8 @@ npx tauri icon your-icon.png
 | # | 内容 | ファイル |
 |---|---|---|
 | 1 | **アイコンの差し替え** | `src-tauri/icons/`（`npx tauri icon` で生成） |
-| 2 | **バージョン番号の統一** | `package.json`（現在 `0.0.0`）と `tauri.conf.json`（現在 `0.1.0`）を同じ値に |
-| 3 | **空セクションのテキスト修正** | `src/locales/ja.json` と `en.json` の `empty.noSnippets` が「+ Snippet で追加」になっているが、そのボタンは廃止済み。セクションヘッダーの `+` を指す文言に変更 |
+| 2 | ~~**バージョン番号の統一**~~ | ✅ 対応済み（0.1.0 に統一） |
+| 3 | ~~**空セクションのテキスト修正**~~ | ✅ 対応済み |
 | 4 | **Cargo.toml のメタ情報** | `name = "app"` → `"snipdock"`、`authors = ["you"]` を実名に、`description` を正式なものに |
 
 ### 動作確認（実機テスト）
