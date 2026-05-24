@@ -1,21 +1,9 @@
-import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import type { Snippet, Language } from '../types';
+import type { Snippet } from '../types';
 import DropdownMenu from './DropdownMenu';
-import { highlight } from '../lib/highlight';
-
-const LANGUAGES: { value: Language; label: string }[] = [
-  { value: 'plain',      label: 'Plain' },
-  { value: 'bash',       label: 'Bash' },
-  { value: 'powershell', label: 'PowerShell' },
-  { value: 'javascript', label: 'JavaScript' },
-  { value: 'python',     label: 'Python' },
-  { value: 'json',       label: 'JSON' },
-  { value: 'yaml',       label: 'YAML' },
-  { value: 'sql',        label: 'SQL' },
-];
 
 interface Props {
   snippet: Snippet;
@@ -78,11 +66,6 @@ export default function SnippetCard({ snippet, isPro, onUpdate, onDelete, onToas
     [editing, draft, snippet.content, onCopy],
   );
 
-  const highlighted = useMemo(
-    () => highlight(snippet.content, snippet.language),
-    [snippet.content, snippet.language],
-  );
-
   const menuItems = [
     {
       label: snippet.pinned ? t('snippet.unpin') : t('snippet.pin'),
@@ -119,21 +102,6 @@ export default function SnippetCard({ snippet, isPro, onUpdate, onDelete, onToas
           </div>
         )}
         {snippet.pinned && <div className="pin-dot" title="Pinned" />}
-        <div className="lang-wrap">
-          <select
-            className="lang-select"
-            value={snippet.language}
-            onChange={e => onUpdate({ language: e.target.value as Language })}
-            onClick={e => e.stopPropagation()}
-          >
-            {LANGUAGES.map(l => (
-              <option key={l.value} value={l.value}>{l.label}</option>
-            ))}
-          </select>
-          <svg className="lang-arrow" width="7" height="5" viewBox="0 0 7 5" fill="none">
-            <path d="M1 1L3.5 4L6 1" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </div>
         <div className="ctrl-spacer" />
         <button
           className={`copy-btn${copied ? ' copied' : ''}`}
@@ -194,10 +162,7 @@ export default function SnippetCard({ snippet, isPro, onUpdate, onDelete, onToas
             </div>
           </>
         ) : (
-          <span
-            className="code-display"
-            dangerouslySetInnerHTML={{ __html: highlighted || '&nbsp;' }}
-          />
+          <span className="code-display">{snippet.content || ' '}</span>
         )}
       </div>
     </div>

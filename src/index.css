@@ -72,8 +72,6 @@
 [data-theme="light"] .bar-btn:hover { background: #eef0f4; color: #000; }
 [data-theme="light"] .settings-bar-btn { color: #111318; }
 [data-theme="light"] .settings-bar-btn:hover { background: #eef0f4; color: #000; }
-[data-theme="light"] .lang-select { background: #e6e8ec; border-color: #d0d4dc; color: #3c4455; }
-[data-theme="light"] .lang-select:hover { background: #dde0e6; color: #111318; }
 [data-theme="light"] .pro-upgrade-row { background: #eef0f4; border-color: #d8dbe2; }
 [data-theme="light"] .pro-upgrade-row:hover { background: #e6e9ef; border-color: var(--accent-border); }
 [data-theme="light"] .setting-row:hover { background: oklch(0.93 0.005 265 / 0.60); }
@@ -325,22 +323,6 @@ body {
   background: var(--accent);
   flex-shrink: 0;
 }
-.lang-wrap { position: relative; flex-shrink: 0; }
-.lang-select {
-  appearance: none; -webkit-appearance: none;
-  background: #2c3540;
-  border: 1px solid #3a4754;
-  color: var(--text-secondary);
-  font-family: var(--font-ui);
-  font-size: 10.5px; font-weight: 500;
-  cursor: pointer;
-  padding: 2px 16px 2px 7px;
-  border-radius: 5px; outline: none;
-  transition: background 0.1s, color 0.1s;
-  letter-spacing: 0.02em;
-}
-.lang-select:hover { background: #34404e; color: var(--text-primary); }
-.lang-arrow { position: absolute; right: 3px; top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--text-muted); }
 .ctrl-spacer { flex: 1; }
 
 /* Copy button */

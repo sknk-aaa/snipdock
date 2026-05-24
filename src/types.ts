@@ -1,4 +1,3 @@
-export type Language = 'plain' | 'bash' | 'powershell' | 'json' | 'yaml' | 'sql' | 'javascript' | 'python';
 export type AppLanguage = 'ja' | 'en';
 export type AccentColor = 'blue' | 'purple' | 'green' | 'amber';
 export type AppTheme = 'dark' | 'light';
@@ -6,7 +5,6 @@ export type AppTheme = 'dark' | 'light';
 export interface Snippet {
   id: string;
   content: string;
-  language: Language;
   pinned: boolean;
   order: number;
 }

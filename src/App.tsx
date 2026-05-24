@@ -35,19 +35,19 @@ const ACCENT_MAP: Record<AccentColor, { css: string; dim: string; border: string
 const SEED_SECTIONS: Section[] = [
   {
     id: 's1', name: 'Git', collapsed: false, order: 0,
-    snippets: [{ id: 'n1', content: 'git status', language: 'bash', pinned: false, order: 0 }],
+    snippets: [{ id: 'n1', content: 'git status', pinned: false, order: 0 }],
   },
   {
     id: 's2', name: 'Node', collapsed: false, order: 1,
-    snippets: [{ id: 'n2', content: 'npm run dev', language: 'bash', pinned: false, order: 0 }],
+    snippets: [{ id: 'n2', content: 'npm run dev', pinned: false, order: 0 }],
   },
   {
     id: 's3', name: 'Docker', collapsed: false, order: 2,
-    snippets: [{ id: 'n3', content: 'docker compose up -d', language: 'bash', pinned: false, order: 0 }],
+    snippets: [{ id: 'n3', content: 'docker compose up -d', pinned: false, order: 0 }],
   },
   {
     id: 's4', name: 'AI', collapsed: false, order: 3,
-    snippets: [{ id: 'n4', content: 'Please review this code and explain potential bugs.', language: 'plain', pinned: false, order: 0 }],
+    snippets: [{ id: 'n4', content: 'Please review this code and explain potential bugs.', pinned: false, order: 0 }],
   },
 ];
 
@@ -270,7 +270,7 @@ export default function App() {
         ...target,
         collapsed: false,
         snippets: [
-          { id: uuidv4(), content: '', language: 'bash', pinned: false, order: 0 },
+          { id: uuidv4(), content: '', pinned: false, order: 0 },
           ...target.snippets.map(s => ({ ...s, order: s.order + 1 })),
         ],
       };
