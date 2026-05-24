@@ -25,7 +25,7 @@ pub fn show_at_cursor(app: &AppHandle) {
         let x = (cx - ws.width as i32 / 2)
             .max(mp.x)
             .min(mp.x + ms.width as i32 - ws.width as i32);
-        let y = (cy - 20)
+        let y = (cy - ws.height as i32 / 2)
             .max(mp.y)
             .min(mp.y + ms.height as i32 - ws.height as i32);
 
