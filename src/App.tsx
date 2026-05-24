@@ -46,6 +46,7 @@ const DEFAULT_SETTINGS: AppSettings = {
   closeAfterCopy: false,
   autoStart: false,
   language: 'en',
+  theme: 'dark',
   accentColor: 'blue',
   bgOpacity: 90,
   windowWidth: 480,
@@ -89,13 +90,18 @@ export default function App() {
   }, [settings.language]);
 
   useEffect(() => {
+    document.documentElement.setAttribute('data-theme', settings.theme);
+  }, [settings.theme]);
+
+  useEffect(() => {
     const a = ACCENT_MAP[settings.accentColor];
     const r = document.documentElement;
     r.style.setProperty('--accent', a.css);
     r.style.setProperty('--accent-dim', a.dim);
     r.style.setProperty('--accent-border', a.border);
-    r.style.setProperty('--bg-window', `color-mix(in srgb, #161a1f ${settings.bgOpacity}%, transparent)`);
-  }, [settings.accentColor, settings.bgOpacity]);
+    const base = settings.theme === 'light' ? '#fafbfc' : '#161a1f';
+    r.style.setProperty('--bg-window', `color-mix(in srgb, ${base} ${settings.bgOpacity}%, transparent)`);
+  }, [settings.accentColor, settings.bgOpacity, settings.theme]);
 
   useEffect(() => {
     if (!isTauri() || !loaded) return;

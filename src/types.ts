@@ -1,6 +1,7 @@
 export type Language = 'plain' | 'bash' | 'powershell' | 'json' | 'yaml' | 'sql' | 'javascript' | 'python';
 export type AppLanguage = 'ja' | 'en';
 export type AccentColor = 'blue' | 'purple' | 'green' | 'amber';
+export type AppTheme = 'dark' | 'light';
 
 export interface Snippet {
   id: string;
@@ -23,6 +24,7 @@ export interface AppSettings {
   closeAfterCopy: boolean;
   autoStart: boolean;
   language: AppLanguage;
+  theme: AppTheme;
   accentColor: AccentColor;
   bgOpacity: number;
   windowWidth: number;

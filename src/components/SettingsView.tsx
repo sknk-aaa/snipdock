@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { AppSettings, AccentColor, AppLanguage } from '../types';
+import type { AppSettings, AccentColor, AppLanguage, AppTheme } from '../types';
 import Toggle from './Toggle';
 
 const ACCENT_COLORS: { key: AccentColor; hex: string }[] = [
@@ -138,6 +138,25 @@ export default function SettingsView({ settings, isPro, onUpdate, onProModal }: 
                 onClick={() => onUpdate({ language: lang })}
               >
                 {lang === 'ja' ? t('settings.japanese') : t('settings.english')}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="settings-sep" />
+
+      <div className="settings-section">
+        <div className="settings-section-label">{t('settings.theme')}</div>
+        <div className="setting-row">
+          <div className="lang-pill-row">
+            {(['dark', 'light'] as AppTheme[]).map(th => (
+              <button
+                key={th}
+                className={`lang-pill${settings.theme === th ? ' active' : ''}`}
+                onClick={() => onUpdate({ theme: th })}
+              >
+                {th === 'dark' ? t('settings.themeDark') : t('settings.themeLight')}
               </button>
             ))}
           </div>
