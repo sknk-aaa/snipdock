@@ -13,6 +13,10 @@ pub fn show_at_cursor(app: &AppHandle) {
         .flatten()
         .or_else(|| window.primary_monitor().ok().flatten());
 
+    let _ = window.unminimize();
+    let _ = window.show();
+
+    // ウィンドウを復元してから位置を設定する（minimize 中の set_position は Windows に無視される）
     if let Some(mon) = monitor {
         let mp = mon.position();
         let ms = mon.size();
@@ -28,8 +32,6 @@ pub fn show_at_cursor(app: &AppHandle) {
         let _ = window.set_position(PhysicalPosition::new(x, y));
     }
 
-    let _ = window.unminimize();
-    let _ = window.show();
     let _ = window.set_focus();
 }
 
