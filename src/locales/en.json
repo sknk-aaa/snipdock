@@ -73,7 +73,7 @@
     "active": "Pro",
     "modalEyebrow": "SnipDock",
     "modalTitle": "Go Pro",
-    "modalSub": "Free version supports up to {{snippets}} snippets and {{sections}} sections. Upgrade to Pro for unlimited.",
+    "modalSub": "Free plan: up to {{snippets}} snippets and {{sections}} sections. Pro removes all limits.",
     "feature1": "Unlimited sections & snippets",
     "feature2": "Drag & drop sorting",
     "feature3": "Export / Import",
