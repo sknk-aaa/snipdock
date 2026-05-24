@@ -34,7 +34,7 @@
   "empty": {
     "noSections": "まだSnippetがありません",
     "addSection": "「+ Section」で追加してください",
-    "noSnippets": "+ Snippet で追加"
+    "noSnippets": "ヘッダーの + でスニペットを追加"
   },
   "hint": {
     "hotkey": "Ctrl + Shift + Space でいつでも開けます"

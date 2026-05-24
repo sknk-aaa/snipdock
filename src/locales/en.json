@@ -34,7 +34,7 @@
   "empty": {
     "noSections": "No snippets yet",
     "addSection": "Click + Section to get started",
-    "noSnippets": "Click + Snippet to add"
+    "noSnippets": "Click + in the section header to add"
   },
   "hint": {
     "hotkey": "Press Ctrl + Shift + Space anytime to open"
