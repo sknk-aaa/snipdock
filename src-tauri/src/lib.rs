@@ -1,5 +1,6 @@
 mod commands;
 mod hotkey;
+mod license;
 mod storage;
 mod tray;
 mod window;
@@ -7,6 +8,8 @@ mod window;
 use std::sync::{Arc, atomic::{AtomicBool, Ordering}};
 use std::time::{Duration, Instant};
 use tauri::{Emitter, Manager};
+
+pub struct ProState(pub Arc<AtomicBool>);
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -26,6 +29,9 @@ pub fn run() {
             }
 
             tray::setup(app.handle())?;
+
+            let is_pro = license::is_pro();
+            app.manage(ProState(Arc::new(AtomicBool::new(is_pro))));
 
             if let Some(w) = app.get_webview_window("main") {
                 let _ = w.minimize();
@@ -79,6 +85,7 @@ pub fn run() {
             commands::update_hotkey,
             commands::set_autostart,
             commands::hide_window,
+            commands::check_license,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

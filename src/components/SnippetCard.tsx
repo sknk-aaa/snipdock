@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import type { Snippet, Language } from '../types';
 import DropdownMenu from './DropdownMenu';
 import { highlight } from '../lib/highlight';
@@ -17,19 +19,31 @@ const LANGUAGES: { value: Language; label: string }[] = [
 
 interface Props {
   snippet: Snippet;
+  isPro: boolean;
   onUpdate: (patch: Partial<Snippet>) => void;
   onDelete: () => void;
   onToast: (msg: string, undoFn?: () => void) => void;
   onCopy: (text: string) => void;
 }
 
-export default function SnippetCard({ snippet, onUpdate, onDelete, onToast, onCopy }: Props) {
+export default function SnippetCard({ snippet, isPro, onUpdate, onDelete, onToast, onCopy }: Props) {
   const { t } = useTranslation();
   const [editing, setEditing] = useState(snippet.content === '');
   const [draft, setDraft] = useState(snippet.content);
   const [menuOpen, setMenuOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const taRef = useRef<HTMLTextAreaElement>(null);
+
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: snippet.id,
+    disabled: !isPro,
+  });
+
+  const dragStyle: React.CSSProperties = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.45 : 1,
+  };
 
   useEffect(() => {
     if (editing && taRef.current) {
@@ -86,8 +100,24 @@ export default function SnippetCard({ snippet, onUpdate, onDelete, onToast, onCo
   ];
 
   return (
-    <div className={`snippet-card${snippet.pinned ? ' is-pinned' : ''}${editing ? ' is-editing' : ''}`}>
+    <div
+      ref={setNodeRef}
+      style={dragStyle}
+      className={`snippet-card${snippet.pinned ? ' is-pinned' : ''}${editing ? ' is-editing' : ''}`}
+    >
       <div className="card-controls">
+        {isPro && (
+          <div className="snip-drag-handle" {...attributes} {...listeners}>
+            <svg width="8" height="12" viewBox="0 0 8 12" fill="none">
+              <circle cx="2.5" cy="2" r="1.1" fill="currentColor" />
+              <circle cx="5.5" cy="2" r="1.1" fill="currentColor" />
+              <circle cx="2.5" cy="6" r="1.1" fill="currentColor" />
+              <circle cx="5.5" cy="6" r="1.1" fill="currentColor" />
+              <circle cx="2.5" cy="10" r="1.1" fill="currentColor" />
+              <circle cx="5.5" cy="10" r="1.1" fill="currentColor" />
+            </svg>
+          </div>
+        )}
         {snippet.pinned && <div className="pin-dot" title="Pinned" />}
         <div className="lang-wrap">
           <select

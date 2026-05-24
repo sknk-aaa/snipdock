@@ -22,7 +22,9 @@
     "copied": "✔ クリップボードにコピーしました",
     "snippetDeleted": "Snippetを削除しました",
     "sectionDeleted": "Sectionを削除しました",
-    "undo": "元に戻す"
+    "undo": "元に戻す",
+    "imported": "インポートしました",
+    "importError": "インポートに失敗しました"
   },
   "confirm": {
     "deleteSection": "「{{name}}」を削除しますか？",

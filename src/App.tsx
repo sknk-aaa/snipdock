@@ -3,6 +3,15 @@ import { useTranslation } from 'react-i18next';
 import { v4 as uuidv4 } from 'uuid';
 import { invoke } from '@tauri-apps/api/core';
 import { listen } from '@tauri-apps/api/event';
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import type { DragEndEvent } from '@dnd-kit/core';
+import { SortableContext, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
 import type { Section, AppSettings, ToastState, AccentColor } from './types';
 import TopBar from './components/TopBar';
 import SectionGroup from './components/SectionGroup';
@@ -63,10 +72,11 @@ export default function App() {
   const [sections, setSections] = useState<Section[]>(SEED_SECTIONS);
   const [settings, setSettings] = useState<AppSettings>(DEFAULT_SETTINGS);
   const [hintSeen, setHintSeen] = useState(false);
-  const [isPro] = useState(false);
+  const [isPro, setIsPro] = useState(false);
 
   const prevHotkeyRef = useRef<string | null>(null);
   const prevAutoStartRef = useRef<boolean | null>(null);
+  const importInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     loadData().then(raw => {
@@ -78,6 +88,9 @@ export default function App() {
       }
       setLoaded(true);
     });
+    if (isTauri()) {
+      invoke<boolean>('check_license').then(setIsPro).catch(() => {});
+    }
   }, []);
 
   useEffect(() => {
@@ -139,6 +152,20 @@ export default function App() {
     return () => { p.then(fn => fn()); };
   }, []);
 
+  // Esc でウィンドウを閉じる（編集中・Settings 中は除外）
+  useEffect(() => {
+    if (!isTauri()) return;
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key !== 'Escape') return;
+      if (view === 'settings') return;
+      const tag = (document.activeElement as HTMLElement)?.tagName;
+      if (tag === 'TEXTAREA' || tag === 'INPUT') return;
+      invoke('hide_window').catch(() => {});
+    }
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, [view]);
+
   const showToast = useCallback((msg: string, undoFn?: () => void) => {
     setToast({ key: Date.now(), msg, undoFn });
   }, []);
@@ -150,6 +177,44 @@ export default function App() {
       showToast(t('toast.copied'));
     }
   }, [settings.closeAfterCopy, showToast, t]);
+
+  // Export
+  function handleExport() {
+    const data = JSON.stringify({ version: 1, sections, settings, hintSeen }, null, 2);
+    const blob = new Blob([data], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'snipdock-backup.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  // Import
+  function handleImportClick() {
+    importInputRef.current?.click();
+  }
+
+  function handleImportFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      try {
+        const raw = JSON.parse(ev.target?.result as string);
+        if (Array.isArray(raw.sections)) {
+          setSections(raw.sections as Section[]);
+          showToast(t('toast.imported'));
+        } else {
+          showToast(t('toast.importError'));
+        }
+      } catch {
+        showToast(t('toast.importError'));
+      }
+      e.target.value = '';
+    };
+    reader.readAsText(file);
+  }
 
   const totalSnippets = sections.reduce((n, s) => n + s.snippets.length, 0);
 
@@ -197,6 +262,24 @@ export default function App() {
     setSettings(prev => ({ ...prev, ...patch }));
   }
 
+  // Section ドラッグ並び替え
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+  );
+
+  function handleSectionDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    setSections(prev => {
+      const sorted = [...prev].sort((a, b) => a.order - b.order);
+      const oldIdx = sorted.findIndex(s => s.id === active.id);
+      const newIdx = sorted.findIndex(s => s.id === over.id);
+      return arrayMove(sorted, oldIdx, newIdx).map((s, i) => ({ ...s, order: i }));
+    });
+  }
+
+  const sortedSections = [...sections].sort((a, b) => a.order - b.order);
+
   return (
     <div className="tool-window">
       <div className="drag-handle" data-tauri-drag-region>
@@ -223,10 +306,12 @@ export default function App() {
           isPro={isPro}
           onUpdate={updateSettings}
           onProModal={() => setProModal(true)}
+          onExport={handleExport}
+          onImport={handleImportClick}
         />
       ) : (
         <div className="main-area">
-          {sections.length === 0 ? (
+          {sortedSections.length === 0 ? (
             <div className="empty-main">
               <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
                 <rect x="4" y="3" width="18" height="22" rx="3" stroke="currentColor" strokeWidth="1.5" />
@@ -237,22 +322,34 @@ export default function App() {
               <span className="empty-sub">{t('empty.addSection')}</span>
             </div>
           ) : (
-            sections.map(sec => (
-              <SectionGroup
-                key={sec.id}
-                section={sec}
-                isPro={isPro}
-                totalSnippets={totalSnippets}
-                onUpdate={patch => updateSection(sec.id, patch)}
-                onDelete={() => deleteSection(sec.id)}
-                onToast={showToast}
-                onAfterCopy={handleAfterCopy}
-                onProModal={() => setProModal(true)}
-              />
-            ))
+            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleSectionDragEnd}>
+              <SortableContext items={sortedSections.map(s => s.id)} strategy={verticalListSortingStrategy}>
+                {sortedSections.map(sec => (
+                  <SectionGroup
+                    key={sec.id}
+                    section={sec}
+                    isPro={isPro}
+                    totalSnippets={totalSnippets}
+                    onUpdate={patch => updateSection(sec.id, patch)}
+                    onDelete={() => deleteSection(sec.id)}
+                    onToast={showToast}
+                    onAfterCopy={handleAfterCopy}
+                    onProModal={() => setProModal(true)}
+                  />
+                ))}
+              </SortableContext>
+            </DndContext>
           )}
         </div>
       )}
+
+      <input
+        ref={importInputRef}
+        type="file"
+        accept=".json"
+        style={{ display: 'none' }}
+        onChange={handleImportFile}
+      />
 
       {toast && (
         <Toast

@@ -257,6 +257,16 @@ body::before {
   flex: 1;
 }
 .section-count { color: var(--text-muted); font-weight: 400; }
+.sec-drag-handle {
+  display: flex; align-items: center; justify-content: center;
+  width: 18px; height: 24px;
+  color: var(--text-muted); opacity: 0.4;
+  cursor: grab; flex-shrink: 0;
+  touch-action: none;
+}
+.sec-drag-handle:hover { opacity: 1; }
+.sec-drag-handle:active { cursor: grabbing; }
+
 .sec-menu-btn {
   width: 20px; height: 20px;
   background: none; border: none;
@@ -353,6 +363,16 @@ body::before {
   color: var(--success-text);
   border-color: oklch(0.40 0.10 155 / 0.50);
 }
+
+.snip-drag-handle {
+  display: flex; align-items: center; justify-content: center;
+  width: 16px; height: 24px;
+  color: var(--text-muted); opacity: 0.35;
+  cursor: grab; flex-shrink: 0;
+  touch-action: none;
+}
+.snip-drag-handle:hover { opacity: 0.9; }
+.snip-drag-handle:active { cursor: grabbing; }
 
 .snip-menu-btn {
   width: 24px; height: 24px;

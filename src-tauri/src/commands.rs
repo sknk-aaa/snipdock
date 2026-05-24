@@ -32,3 +32,8 @@ pub fn set_autostart(app: AppHandle, enabled: bool) -> Result<(), String> {
 pub fn hide_window(app: AppHandle) {
     window::hide(&app);
 }
+
+#[tauri::command]
+pub fn check_license(state: tauri::State<'_, crate::ProState>) -> bool {
+    state.0.load(std::sync::atomic::Ordering::SeqCst)
+}

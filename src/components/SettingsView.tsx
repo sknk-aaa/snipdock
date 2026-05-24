@@ -15,6 +15,8 @@ interface Props {
   isPro: boolean;
   onUpdate: (patch: Partial<AppSettings>) => void;
   onProModal: () => void;
+  onExport: () => void;
+  onImport: () => void;
 }
 
 function buildHotkey(e: KeyboardEvent): string | null {
@@ -32,7 +34,7 @@ function buildHotkey(e: KeyboardEvent): string | null {
   return [...modifiers, key].join('+');
 }
 
-export default function SettingsView({ settings, isPro, onUpdate, onProModal }: Props) {
+export default function SettingsView({ settings, isPro, onUpdate, onProModal, onExport, onImport }: Props) {
   const { t } = useTranslation();
   const [recording, setRecording] = useState(false);
 
@@ -168,7 +170,11 @@ export default function SettingsView({ settings, isPro, onUpdate, onProModal }: 
       <div className="settings-section">
         <div className="settings-section-label">{t('settings.data')}</div>
 
-        <div className={`setting-row${!isPro ? ' disabled' : ''}`}>
+        <div
+          className={`setting-row${!isPro ? ' disabled' : ''}`}
+          style={{ cursor: isPro ? 'pointer' : 'default' }}
+          onClick={isPro ? onExport : onProModal}
+        >
           <div className="setting-label">
             {t('settings.export')}
             <span className="setting-sub">{t('settings.exportDesc')}</span>
@@ -176,7 +182,11 @@ export default function SettingsView({ settings, isPro, onUpdate, onProModal }: 
           {!isPro && <span className="pro-badge">PRO</span>}
         </div>
 
-        <div className={`setting-row${!isPro ? ' disabled' : ''}`}>
+        <div
+          className={`setting-row${!isPro ? ' disabled' : ''}`}
+          style={{ cursor: isPro ? 'pointer' : 'default' }}
+          onClick={isPro ? onImport : onProModal}
+        >
           <div className="setting-label">
             {t('settings.import')}
             <span className="setting-sub">{t('settings.importDesc')}</span>
