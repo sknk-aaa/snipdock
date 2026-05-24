@@ -310,7 +310,12 @@ export default function App() {
 
   return (
     <div className="tool-window">
-      <div className="drag-handle" data-tauri-drag-region>
+      <div
+        className="drag-handle"
+        onMouseDown={() => {
+          if (isTauri()) getCurrentWindow().startDragging().catch(() => {});
+        }}
+      >
         <div className="drag-handle-pip" />
       </div>
 
