@@ -3,11 +3,11 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg-desktop:     oklch(0.07 0.015 265);
-  --bg-window:      oklch(0.10 0.013 265 / 0.97);
-  --bg-surface:     oklch(0.16 0.012 265);
-  --bg-surface-hi:  oklch(0.21 0.010 265);
-  --bg-input:       oklch(0.14 0.010 265);
+  --bg-desktop:     #0e1114;
+  --bg-window:      #161a1f;
+  --bg-surface:     #24292f;
+  --bg-surface-hi:  #2d333b;
+  --bg-input:       #1c2128;
   --border:         oklch(0.26 0.009 265 / 0.60);
   --border-hi:      oklch(0.38 0.010 265 / 0.85);
   --text-primary:   oklch(0.92 0.006 260);

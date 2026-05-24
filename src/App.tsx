@@ -94,7 +94,7 @@ export default function App() {
     r.style.setProperty('--accent', a.css);
     r.style.setProperty('--accent-dim', a.dim);
     r.style.setProperty('--accent-border', a.border);
-    r.style.setProperty('--bg-window', `oklch(0.13 0.013 265 / ${settings.bgOpacity / 100})`);
+    r.style.setProperty('--bg-window', `color-mix(in srgb, #161a1f ${settings.bgOpacity}%, transparent)`);
   }, [settings.accentColor, settings.bgOpacity]);
 
   useEffect(() => {
