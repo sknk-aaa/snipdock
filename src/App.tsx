@@ -22,8 +22,8 @@ import ProModal from './components/ProModal';
 import i18n from './lib/i18n';
 import { isTauri, loadData, saveData } from './lib/storage';
 
-const FREE_MAX_SECTIONS = 5;
-const FREE_MAX_SNIPPETS = 20;
+const FREE_MAX_SECTIONS = 2;
+const FREE_MAX_SNIPPETS = 5;
 
 const ACCENT_MAP: Record<AccentColor, { css: string; dim: string; border: string }> = {
   blue:   { css: 'oklch(0.64 0.18 250)', dim: 'oklch(0.64 0.18 250 / 0.15)', border: 'oklch(0.64 0.18 250 / 0.45)' },
@@ -35,19 +35,18 @@ const ACCENT_MAP: Record<AccentColor, { css: string; dim: string; border: string
 const SEED_SECTIONS: Section[] = [
   {
     id: 's1', name: 'Git', collapsed: false, order: 0,
-    snippets: [{ id: 'n1', content: 'git status', pinned: false, order: 0 }],
+    snippets: [
+      { id: 'n1', content: 'git status',          pinned: false, order: 0 },
+      { id: 'n2', content: 'git log --oneline -10', pinned: false, order: 1 },
+      { id: 'n3', content: 'git stash',            pinned: false, order: 2 },
+    ],
   },
   {
-    id: 's2', name: 'Node', collapsed: false, order: 1,
-    snippets: [{ id: 'n2', content: 'npm run dev', pinned: false, order: 0 }],
-  },
-  {
-    id: 's3', name: 'Docker', collapsed: false, order: 2,
-    snippets: [{ id: 'n3', content: 'docker compose up -d', pinned: false, order: 0 }],
-  },
-  {
-    id: 's4', name: 'AI', collapsed: false, order: 3,
-    snippets: [{ id: 'n4', content: 'Please review this code and explain potential bugs.', pinned: false, order: 0 }],
+    id: 's2', name: 'Dev', collapsed: false, order: 1,
+    snippets: [
+      { id: 'n4', content: 'npm run dev',          pinned: false, order: 0 },
+      { id: 'n5', content: 'docker compose up -d', pinned: false, order: 1 },
+    ],
   },
 ];
 

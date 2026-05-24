@@ -73,7 +73,7 @@
     "active": "Pro",
     "modalEyebrow": "SnipDock",
     "modalTitle": "Proにアップグレード",
-    "modalSub": "Free版ではスニペット最大{{snippets}}個・セクション最大{{sections}}個まで利用できます。Proで無制限に。",
+    "modalSub": "Free版ではスニペット最大{{snippets}}個・セクション最大{{sections}}個まで。Proで無制限に。",
     "feature1": "Section・Snippet数無制限",
     "feature2": "ドラッグで並び替え",
     "feature3": "エクスポート / インポート",
