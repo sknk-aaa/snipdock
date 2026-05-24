@@ -318,8 +318,7 @@ export default function App() {
           if (!isTauri()) return;
           isDraggingRef.current = true;
           getCurrentWindow().startDragging().catch(() => {});
-          const onUp = () => { isDraggingRef.current = false; window.removeEventListener('mouseup', onUp); };
-          window.addEventListener('mouseup', onUp);
+          setTimeout(() => { isDraggingRef.current = false; }, 500);
         }}
       >
         <div className="drag-handle-pip" />
