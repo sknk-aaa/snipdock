@@ -46,7 +46,7 @@
   --danger:         oklch(0.48 0.18 15);
   --danger-bg:      oklch(0.95 0.04 15);
 }
-[data-theme="light"] body::before {
+[data-theme="light"] .tool-window::after {
   background:
     radial-gradient(ellipse 70% 60% at 25% 35%, oklch(0.88 0.03 230 / 0.45) 0%, transparent 100%),
     radial-gradient(ellipse 55% 50% at 78% 72%, oklch(0.86 0.02 260 / 0.30) 0%, transparent 100%);
@@ -78,24 +78,18 @@
 [data-theme="light"] .pro-upgrade-row:hover { background: #e6e9ef; border-color: var(--accent-border); }
 [data-theme="light"] .setting-row:hover { background: oklch(0.93 0.005 265 / 0.60); }
 
+html {
+  height: 100%;
+}
+
 body {
   font-family: var(--font-ui);
-  background: var(--bg-desktop);
-  min-height: 100vh;
+  background: transparent;
+  height: 100%;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
   overflow: hidden;
   -webkit-font-smoothing: antialiased;
-}
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background:
-    radial-gradient(ellipse 70% 60% at 25% 35%, oklch(0.15 0.04 265 / 0.40) 0%, transparent 100%),
-    radial-gradient(ellipse 55% 50% at 78% 72%, oklch(0.12 0.03 235 / 0.28) 0%, transparent 100%);
-  pointer-events: none;
 }
 
 #root {
@@ -104,8 +98,8 @@ body::before {
 
 /* ── Tool window ── */
 .tool-window {
-  width: 440px;
-  max-height: 88vh;
+  width: 100%;
+  flex: 1;
   background: var(--bg-window);
   backdrop-filter: blur(32px) saturate(200%);
   -webkit-backdrop-filter: blur(32px) saturate(200%);
@@ -122,6 +116,19 @@ body::before {
   z-index: 1;
   min-width: 340px;
   min-height: 260px;
+}
+
+/* 背景グラデーション装飾 (tool-window 内にクリップ) */
+.tool-window::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background:
+    radial-gradient(ellipse 70% 60% at 25% 35%, oklch(0.15 0.04 265 / 0.35) 0%, transparent 100%),
+    radial-gradient(ellipse 55% 50% at 78% 72%, oklch(0.12 0.03 235 / 0.22) 0%, transparent 100%);
+  pointer-events: none;
+  z-index: 0;
 }
 
 /* ── Drag handle ── */
