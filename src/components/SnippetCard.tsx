@@ -88,55 +88,20 @@ export default function SnippetCard({ snippet, isPro, onUpdate, onDelete, onToas
       style={dragStyle}
       className={`snippet-card${snippet.pinned ? ' is-pinned' : ''}${editing ? ' is-editing' : ''}`}
     >
-      <div className="card-controls">
-        {isPro && (
-          <div className="snip-drag-handle" {...attributes} {...listeners}>
-            <svg width="8" height="12" viewBox="0 0 8 12" fill="none">
-              <circle cx="2.5" cy="2" r="1.1" fill="currentColor" />
-              <circle cx="5.5" cy="2" r="1.1" fill="currentColor" />
-              <circle cx="2.5" cy="6" r="1.1" fill="currentColor" />
-              <circle cx="5.5" cy="6" r="1.1" fill="currentColor" />
-              <circle cx="2.5" cy="10" r="1.1" fill="currentColor" />
-              <circle cx="5.5" cy="10" r="1.1" fill="currentColor" />
-            </svg>
-          </div>
-        )}
-        {snippet.pinned && <div className="pin-dot" title="Pinned" />}
-        <div className="ctrl-spacer" />
-        <button
-          className={`copy-btn${copied ? ' copied' : ''}`}
-          onClick={handleCopy}
-          title={t('snippet.copy')}
-        >
-          {copied ? (
-            <>
-              <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                <path d="M1.5 5L4 7.5L8.5 2.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-              {t('snippet.copied')}
-            </>
-          ) : (
-            <>
-              <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                <rect x="0.5" y="2.5" width="6.5" height="7" rx="1.2" stroke="currentColor" strokeWidth="1.1" />
-                <path d="M3 2.5V2A1.2 1.2 0 014.2.8h4.1A1.2 1.2 0 019.5 2v5.5A1.2 1.2 0 018.3 7.7H8" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" />
-              </svg>
-              {t('snippet.copy')}
-            </>
-          )}
-        </button>
-        <div className="dropdown-wrap">
-          <button
-            className="snip-menu-btn"
-            onClick={e => { e.stopPropagation(); setMenuOpen(v => !v); }}
-          >
-            ···
-          </button>
-          {menuOpen && (
-            <DropdownMenu items={menuItems} onClose={() => setMenuOpen(false)} />
-          )}
+      {isPro && (
+        <div className="snip-drag-handle" {...attributes} {...listeners}>
+          <svg width="8" height="12" viewBox="0 0 8 12" fill="none">
+            <circle cx="2.5" cy="2"   r="1.1" fill="currentColor" />
+            <circle cx="5.5" cy="2"   r="1.1" fill="currentColor" />
+            <circle cx="2.5" cy="6"   r="1.1" fill="currentColor" />
+            <circle cx="5.5" cy="6"   r="1.1" fill="currentColor" />
+            <circle cx="2.5" cy="10"  r="1.1" fill="currentColor" />
+            <circle cx="5.5" cy="10"  r="1.1" fill="currentColor" />
+          </svg>
         </div>
-      </div>
+      )}
+
+      {snippet.pinned && <div className="pin-dot" title="Pinned" />}
 
       <div className="code-wrap" onClick={() => !editing && setEditing(true)}>
         {editing ? (
@@ -163,6 +128,41 @@ export default function SnippetCard({ snippet, isPro, onUpdate, onDelete, onToas
           </>
         ) : (
           <span className="code-display">{snippet.content || ' '}</span>
+        )}
+      </div>
+
+      <button
+        className={`copy-btn${copied ? ' copied' : ''}`}
+        onClick={handleCopy}
+        title={t('snippet.copy')}
+      >
+        {copied ? (
+          <>
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+              <path d="M1.5 5L4 7.5L8.5 2.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            {t('snippet.copied')}
+          </>
+        ) : (
+          <>
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+              <rect x="0.5" y="2.5" width="6.5" height="7" rx="1.2" stroke="currentColor" strokeWidth="1.1" />
+              <path d="M3 2.5V2A1.2 1.2 0 014.2.8h4.1A1.2 1.2 0 019.5 2v5.5A1.2 1.2 0 018.3 7.7H8" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" />
+            </svg>
+            {t('snippet.copy')}
+          </>
+        )}
+      </button>
+
+      <div className="dropdown-wrap">
+        <button
+          className="snip-menu-btn"
+          onClick={e => { e.stopPropagation(); setMenuOpen(v => !v); }}
+        >
+          ···
+        </button>
+        {menuOpen && (
+          <DropdownMenu items={menuItems} onClose={() => setMenuOpen(false)} />
         )}
       </div>
     </div>
