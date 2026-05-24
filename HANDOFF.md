@@ -323,23 +323,31 @@ npx tauri icon your-icon.png
 
 | # | 内容 | ファイル |
 |---|---|---|
-| 1 | **アイコンの差し替え** | `src-tauri/icons/`（`npx tauri icon` で生成） |
+| 1 | ~~**アイコンの差し替え**~~ | ✅ 対応済み（`app-icon.png` → `npx tauri icon` で全サイズ生成） |
 | 2 | ~~**バージョン番号の統一**~~ | ✅ 対応済み（0.1.0 に統一） |
 | 3 | ~~**空セクションのテキスト修正**~~ | ✅ 対応済み |
-| 4 | **Cargo.toml のメタ情報** | `name = "app"` → `"snipdock"`、`authors = ["you"]` を実名に、`description` を正式なものに |
+| 4 | ~~**Cargo.toml のメタ情報**~~ | ✅ 対応済み（name: snipdock / authors: Kaneko Apps 等） |
 
 ### 動作確認（実機テスト）
 
-リリースビルド（`npm run tauri build`）でサイドロードし、以下を確認する:
+リリースビルド（`npm run tauri build` → `sideload-msix.ps1`）でサイドロードし、以下を確認する。
 
+#### Pro 機能（最優先・未確認）
+> デバッグビルドは常に Free 扱いなので、必ずリリースビルドで確認すること
+
+- [ ] セクション3個目を追加しようとすると ProModal が出る
+- [ ] スニペット6個目を追加しようとすると ProModal が出る
+- [ ] Free ユーザーはドラッグ並び替えができない（ハンドルが非表示）
+- [ ] Free ユーザーは Export / Import ボタンを押すと ProModal が出る
+- [ ] Store で購入済みアカウントで `check_license` が `true` を返す
+
+#### 全般
 - [ ] ホットキー変更 → 旧キーで開かなくなる、新キーで開ける
 - [ ] autoStart ON → Windows 再起動後に自動起動する
 - [ ] autoStart OFF → 自動起動しなくなる
 - [ ] `closeAfterCopy` ON → コピー後にウィンドウが閉じる
 - [ ] データが `%APPDATA%\SnipDock\data.json` に保存・復元される
 - [ ] ウィンドウサイズを変更後に再起動しても記憶されている
-- [ ] リリースビルドで `check_license` が正しく動作する（要 Store 購入環境）
-- [ ] ドラッグ並び替えが Free ユーザーには機能しない
 
 ### 任意対応
 
