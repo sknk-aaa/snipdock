@@ -246,6 +246,7 @@ body {
   transition: background 0.12s;
 }
 .section-header:hover { background: var(--bg-surface); }
+.section-header.is-open .sec-menu-btn { opacity: 0.5; }
 .section-header:hover .sec-menu-btn { opacity: 1; }
 .chevron {
   color: var(--text-muted);
@@ -283,7 +284,8 @@ body {
   flex-shrink: 0;
 }
 .sec-add-btn:hover { background: var(--bg-surface-hi); color: var(--text-primary); opacity: 1; }
-.section-header:hover .sec-add-btn { opacity: 0.6; }
+.section-header.is-open .sec-add-btn { opacity: 0.5; }
+.section-header:hover .sec-add-btn { opacity: 0.8; }
 
 .sec-menu-btn {
   width: 20px; height: 20px;

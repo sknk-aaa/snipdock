@@ -115,7 +115,7 @@ export default function SectionGroup({
   return (
     <div ref={setNodeRef} style={dragStyle} className="section-group">
       <div
-        className="section-header"
+        className={`section-header${section.collapsed ? '' : ' is-open'}`}
         onClick={() => !renaming && !menuOpen && onUpdate({ collapsed: !section.collapsed })}
       >
         {isPro && (
