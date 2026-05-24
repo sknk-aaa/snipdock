@@ -77,6 +77,7 @@ export default function App() {
   const prevHotkeyRef = useRef<string | null>(null);
   const prevAutoStartRef = useRef<boolean | null>(null);
   const importInputRef = useRef<HTMLInputElement>(null);
+  const isDraggingRef = useRef(false);
 
   useEffect(() => {
     loadData().then(raw => {
@@ -173,6 +174,7 @@ export default function App() {
     if (!isTauri()) return;
     const p = listen('window-blur', () => {
       if (view === 'settings') return;
+      if (isDraggingRef.current) return;
       invoke('hide_window').catch(() => {});
     });
     return () => { p.then(fn => fn()); };
@@ -313,7 +315,11 @@ export default function App() {
       <div
         className="drag-handle"
         onMouseDown={() => {
-          if (isTauri()) getCurrentWindow().startDragging().catch(() => {});
+          if (!isTauri()) return;
+          isDraggingRef.current = true;
+          getCurrentWindow().startDragging().catch(() => {});
+          const onUp = () => { isDraggingRef.current = false; window.removeEventListener('mouseup', onUp); };
+          window.addEventListener('mouseup', onUp);
         }}
       >
         <div className="drag-handle-pip" />
