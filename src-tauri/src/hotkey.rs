@@ -3,8 +3,19 @@ use tauri_plugin_global_shortcut::{GlobalShortcutExt, ShortcutState};
 
 use crate::window;
 
+/// "Ctrl+Alt+Space" → "ctrl+alt+Space"
+/// モディファイアは小文字化、キー名は元の大文字小文字を維持する。
 fn app_to_shortcut(hotkey: &str) -> String {
-    hotkey.to_lowercase()
+    let parts: Vec<&str> = hotkey.split('+').collect();
+    if parts.len() < 2 {
+        return hotkey.to_string();
+    }
+    let modifiers: Vec<String> = parts[..parts.len() - 1]
+        .iter()
+        .map(|m| m.to_lowercase())
+        .collect();
+    let key = parts.last().unwrap();
+    format!("{}+{}", modifiers.join("+"), key)
 }
 
 pub fn register(app: &AppHandle, hotkey: &str) {

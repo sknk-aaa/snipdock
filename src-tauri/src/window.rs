@@ -28,6 +28,7 @@ pub fn show_at_cursor(app: &AppHandle) {
         let _ = window.set_position(PhysicalPosition::new(x, y));
     }
 
+    let _ = window.unminimize();
     let _ = window.show();
     let _ = window.set_focus();
 }
