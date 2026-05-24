@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { v4 as uuidv4 } from 'uuid';
 import { invoke } from '@tauri-apps/api/core';
 import { listen } from '@tauri-apps/api/event';
+import { getCurrentWindow, LogicalSize } from '@tauri-apps/api/window';
 import {
   DndContext,
   closestCenter,
@@ -80,17 +81,52 @@ export default function App() {
 
   useEffect(() => {
     loadData().then(raw => {
+      let savedSettings = DEFAULT_SETTINGS;
       if (raw && typeof raw === 'object') {
         const d = raw as Record<string, unknown>;
         if (Array.isArray(d.sections)) setSections(d.sections as Section[]);
-        if (d.settings) setSettings({ ...DEFAULT_SETTINGS, ...(d.settings as Partial<AppSettings>) });
+        if (d.settings) {
+          savedSettings = { ...DEFAULT_SETTINGS, ...(d.settings as Partial<AppSettings>) };
+          setSettings(savedSettings);
+        }
         if (typeof d.hintSeen === 'boolean') setHintSeen(d.hintSeen);
+      }
+      if (isTauri()) {
+        getCurrentWindow()
+          .setSize(new LogicalSize(savedSettings.windowWidth, savedSettings.windowHeight))
+          .catch(() => {});
       }
       setLoaded(true);
     });
     if (isTauri()) {
       invoke<boolean>('check_license').then(setIsPro).catch(() => {});
     }
+  }, []);
+
+  // ウィンドウリサイズを検知してサイズを settings に保存
+  useEffect(() => {
+    if (!isTauri()) return;
+    const appWin = getCurrentWindow();
+    let timer: ReturnType<typeof setTimeout>;
+    const p = appWin.onResized(async () => {
+      clearTimeout(timer);
+      timer = setTimeout(async () => {
+        try {
+          const sf = await appWin.scaleFactor();
+          const phys = await appWin.innerSize();
+          const log = phys.toLogical(sf);
+          setSettings(prev => ({
+            ...prev,
+            windowWidth: Math.round(log.width),
+            windowHeight: Math.round(log.height),
+          }));
+        } catch {}
+      }, 500);
+    });
+    return () => {
+      clearTimeout(timer);
+      p.then(fn => fn());
+    };
   }, []);
 
   useEffect(() => {
